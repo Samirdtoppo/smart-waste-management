@@ -1,0 +1,265 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Waste Management</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f0f7f1;
+    color: #20352a;
+}
+
+header {
+    background: #146c43;
+    color: white;
+    text-align: center;
+    padding: 25px 15px;
+}
+
+header h1 {
+    margin: 0 0 8px;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 25px auto;
+    padding: 15px;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px #00000010;
+    margin-bottom: 18px;
+}
+
+.stat {
+    text-align: center;
+}
+
+.stat h2 {
+    color: #146c43;
+    font-size: 30px;
+    margin: 10px;
+}
+
+h2 {
+    margin-top: 0;
+}
+
+.progress {
+    background: #dce8df;
+    height: 12px;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 12px 0;
+}
+
+.bar {
+    height: 100%;
+    border-radius: 10px;
+}
+
+form {
+    display: grid;
+    gap: 12px;
+}
+
+input, select, textarea, button {
+    padding: 12px;
+    border-radius: 7px;
+    border: 1px solid #ccd8ce;
+    font-size: 15px;
+    width: 100%;
+}
+
+button {
+    background: #146c43;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    background: #0d5031;
+}
+
+.report {
+    background: #f5faf5;
+    padding: 12px;
+    border-left: 4px solid #146c43;
+    margin-top: 10px;
+    border-radius: 5px;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    color: #557060;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>♻️ Smart Waste Management</h1>
+    <p>Cleaner City, Greener Future 🌱</p>
+</header>
+
+<div class="container">
+
+    <div class="stats">
+        <div class="card stat">
+            <p>Total Dustbins</p>
+            <h2 id="total">3</h2>
+        </div>
+
+        <div class="card stat">
+            <p>Bins Need Collection</p>
+            <h2 id="full">1</h2>
+        </div>
+
+        <div class="card stat">
+            <p>Waste Reports</p>
+            <h2 id="count">0</h2>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>📊 Dustbin Monitoring</h2>
+
+        <p>Dustbin A — Main Gate (35%)</p>
+        <div class="progress">
+            <div class="bar" style="width:35%; background:#2eae68"></div>
+        </div>
+
+        <p>Dustbin B — College Canteen (90%)</p>
+        <div class="progress">
+            <div class="bar" style="width:90%; background:#e74c3c"></div>
+        </div>
+
+        <p>Dustbin C — Library (60%)</p>
+        <div class="progress">
+            <div class="bar" style="width:60%; background:#e5a329"></div>
+        </div>
+
+        <p id="binStatus">
+            🔴 Dustbin B needs immediate collection.
+        </p>
+    </div>
+
+    <div class="card">
+        <h2>📢 Report Waste</h2>
+
+        <form id="wasteForm">
+            <input id="name" type="text"
+                   placeholder="Your name" required>
+
+            <select id="location" required>
+                <option value="">Select location</option>
+                <option>Main Gate</option>
+                <option>College Canteen</option>
+                <option>Library</option>
+                <option>College Garden</option>
+                <option>Other Area</option>
+            </select>
+
+            <select id="type" required>
+                <option value="">Select waste type</option>
+                <option>Wet Waste</option>
+                <option>Dry Waste</option>
+                <option>E-Waste</option>
+                <option>Plastic Waste</option>
+            </select>
+
+            <textarea id="description"
+                      placeholder="Describe the waste problem"
+                      rows="3" required></textarea>
+
+            <button type="submit">Submit Report</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>📋 Recent Reports</h2>
+        <div id="reports">
+            <p>No reports submitted yet.</p>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    Smart Waste Management Project | Hackathon Demo 🌍
+</footer>
+
+<script>
+let reports = 0;
+
+document.getElementById("wasteForm")
+.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const location = document.getElementById("location").value;
+    const type = document.getElementById("type").value;
+    const description =
+        document.getElementById("description").value.trim();
+
+    if (!name || !location || !type || !description) {
+        alert("Please fill all fields!");
+        return;
+    }
+
+    reports++;
+
+    document.getElementById("count").textContent = reports;
+
+    const report = document.createElement("div");
+    report.className = "report";
+
+    const heading = document.createElement("strong");
+    heading.textContent = type + " — " + location;
+
+    const details = document.createElement("p");
+    details.textContent = description;
+
+    const reporter = document.createElement("small");
+    reporter.textContent = "Reported by: " + name;
+
+    report.append(heading, details, reporter);
+
+    const reportList = document.getElementById("reports");
+
+    if (reports === 1) {
+        reportList.innerHTML = "";
+    }
+
+    reportList.prepend(report);
+
+    alert("Waste report submitted successfully!");
+
+    this.reset();
+});
+</script>
+
+</body>
+</html>

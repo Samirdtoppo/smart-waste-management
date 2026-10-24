@@ -1,0 +1,732 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EcoSmart | Smart Waste Management</title>
+
+<style>
+:root {
+  --green:#168653;
+  --dark:#073e32;
+  --bg:#f1f7f3;
+  --card:#ffffff;
+  --text:#193b31;
+  --muted:#688075;
+  --border:#dce9df;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+header {
+  background:var(--dark);
+  color:white;
+  padding:18px 5%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+}
+header h1 { margin:0; }
+header p { margin:5px 0 0; color:#bcebcf; }
+button {
+  padding:10px 13px;
+  border:0;
+  border-radius:7px;
+  cursor:pointer;
+  font-weight:600;
+}
+button:focus-visible,input:focus-visible,
+select:focus-visible,textarea:focus-visible {
+  outline:2px solid #168653;
+  outline-offset:2px;
+}
+.primary { background:var(--green); color:white; }
+.secondary { background:#e2f4e8; color:#145b3b; }
+.danger-btn { background:#ffe4e4; color:#b42323; }
+header button { background:white; color:var(--dark); }
+nav {
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  padding:12px 5%;
+  background:var(--card);
+  border-bottom:1px solid var(--border);
+}
+nav button { background:transparent; color:var(--text); }
+nav button.active { background:var(--green); color:white; }
+main { width:92%; max-width:1200px; margin:22px auto; }
+.hero {
+  display:flex;
+  align-items:center;
+  background:linear-gradient(120deg,#d7f5e2,#b9e5c8);
+  border-radius:15px;
+  overflow:hidden;
+  margin-bottom:20px;
+}
+.hero-text { padding:25px; flex:1; }
+.hero h2 { font-size:clamp(25px,4vw,40px); margin:10px 0; }
+.hero img { width:38%; height:210px; object-fit:cover; }
+.stats {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+  gap:14px;
+}
+.card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:18px;
+  margin-bottom:16px;
+  box-shadow:0 3px 12px #123b2010;
+}
+.stat { border-top:4px solid var(--green); }
+.stat p { color:var(--muted); margin:0; }
+.stat h2 { margin:12px 0; font-size:30px; }
+.layout {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+  margin-top:18px;
+}
+.bin {
+  padding:13px;
+  border:1px solid var(--border);
+  border-radius:9px;
+  margin:12px 0;
+}
+.bin-head { display:flex; justify-content:space-between; gap:8px; }
+.progress {
+  height:11px;
+  background:#e4eee7;
+  border-radius:20px;
+  overflow:hidden;
+  margin:12px 0;
+}
+.bar { height:100%; background:#20a568; }
+.bar.warning { background:#e9ad36; }
+.bar.danger { background:#e84d4d; }
+form { display:grid; gap:11px; }
+input,select,textarea {
+  width:100%;
+  padding:11px;
+  border:1px solid var(--border);
+  border-radius:7px;
+  background:var(--card);
+  color:var(--text);
+  font:inherit;
+}
+.full { width:100%; }
+.report {
+  border-left:4px solid var(--green);
+  border-radius:7px;
+  background:var(--bg);
+  padding:13px;
+  margin:12px 0;
+  overflow-wrap:anywhere;
+}
+.report img {
+  display:block;
+  max-width:100%;
+  max-height:220px;
+  object-fit:contain;
+  border-radius:8px;
+  margin-top:10px;
+}
+.tag {
+  display:inline-block;
+  border-radius:20px;
+  padding:5px 9px;
+  font-size:12px;
+  background:#fff0c9;
+  color:#835600;
+}
+.tag.resolved { background:#d8f6e2; color:#12653a; }
+.controls {
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-top:12px;
+}
+.muted { color:var(--muted); font-size:13px; }
+#toast {
+  display:none;
+  padding:12px;
+  background:#d9f5e3;
+  color:#145c3b;
+  border-radius:8px;
+  margin-bottom:15px;
+}
+.page { display:none; }
+.page.active { display:block; }
+.places {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:12px;
+}
+.places img {
+  width:100%;
+  height:145px;
+  object-fit:cover;
+  border-radius:8px;
+}
+footer {
+  text-align:center;
+  background:var(--dark);
+  color:white;
+  padding:22px;
+  margin-top:30px;
+}
+body.dark {
+  --bg:#10271f;
+  --card:#1c382b;
+  --text:#eaf5ed;
+  --muted:#b4cabe;
+  --border:#3b5b48;
+}
+body.dark .report { background:#243f31; }
+body.dark .secondary { background:#315b43; color:white; }
+body.dark .danger-btn { background:#602c2c; color:#ffdada; }
+@media(max-width:700px) {
+  .layout { grid-template-columns:1fr; }
+  .hero { flex-direction:column; }
+  .hero img { width:100%; height:180px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div>
+    <h1>♻️ EcoSmart</h1>
+    <p>Smart Waste Management System</p>
+  </div>
+  <button id="themeBtn">🌙 Dark Mode</button>
+</header>
+
+<nav>
+  <button class="active" data-page="dashboard">🏠 Dashboard</button>
+  <button data-page="reportPage">📝 Report Waste</button>
+  <button data-page="adminPage">🛠️ Admin Panel</button>
+</nav>
+
+<main>
+<div id="toast" role="status"></div>
+
+<!-- DASHBOARD -->
+<section class="page active" id="dashboard">
+  <div class="hero">
+    <div class="hero-text">
+      <span>SMART CAMPUS • GREEN FUTURE</span>
+      <h2>Cleaner Campus, Better Future 🌱</h2>
+      <p>Monitor dustbins, report waste and help keep
+         our campus clean.</p>
+      <button class="primary" data-goto="reportPage">
+        + Report Waste
+      </button>
+    </div>
+    <img
+      src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=800&q=80"
+      alt="Recycling and waste management">
+  </div>
+
+  <div class="stats">
+    <div class="card stat">
+      <p>🗑️ Total Dustbins</p>
+      <h2 id="totalBins">3</h2>
+      <span class="muted">Across campus</span>
+    </div>
+    <div class="card stat">
+      <p>🚨 Need Collection</p>
+      <h2 id="fullBins">0</h2>
+      <span class="muted">80% or more full</span>
+    </div>
+    <div class="card stat">
+      <p>📢 Total Reports</p>
+      <h2 id="totalReports">0</h2>
+      <span class="muted">Saved reports</span>
+    </div>
+    <div class="card stat">
+      <p>✅ Resolved Reports</p>
+      <h2 id="resolvedReports">0</h2>
+      <span class="muted">Marked by admin</span>
+    </div>
+  </div>
+
+  <div class="layout">
+    <div class="card">
+      <h3>📊 Dustbin Monitoring</h3>
+      <p class="muted">Use the buttons to simulate bin levels.</p>
+      <div id="bins"></div>
+    </div>
+
+    <div class="card">
+      <h3>📍 Campus Collection Points</h3>
+      <div class="places">
+        <div>
+          <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=500&q=80"
+               alt="College entrance">
+          <h4>🚪 Main Gate</h4>
+          <span class="tag">Dustbin A</span>
+        </div>
+        <div>
+          <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=500&q=80"
+               alt="Canteen dining area">
+          <h4>🍽️ Canteen</h4>
+          <span class="tag">Dustbin B</span>
+        </div>
+        <div>
+          <img src="https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=500&q=80"
+               alt="College building">
+          <h4>📚 Library</h4>
+          <span class="tag">Dustbin C</span>
+        </div>
+      </div>
+      <p class="muted">Illustrative images and simulated sensor readings.</p>
+    </div>
+  </div>
+</section>
+
+<!-- REPORT PAGE -->
+<section class="page" id="reportPage">
+  <div class="card">
+    <h2>📝 Report Waste</h2>
+    <p class="muted">Submit a campus waste complaint.</p>
+
+    <form id="reportForm">
+      <label for="name">Your name</label>
+      <input id="name" maxlength="60" required>
+
+      <label for="location">Location</label>
+      <select id="location" required>
+        <option value="">Select location</option>
+        <option>Main Gate</option>
+        <option>Canteen</option>
+        <option>Library</option>
+        <option>Garden</option>
+        <option>Other Area</option>
+      </select>
+
+      <label for="type">Waste category</label>
+      <select id="type" required>
+        <option value="">Select category</option>
+        <option>Wet Waste</option>
+        <option>Dry Waste</option>
+        <option>Plastic Waste</option>
+        <option>E-Waste</option>
+      </select>
+
+      <label for="description">Describe the problem</label>
+      <textarea id="description" rows="4"
+        maxlength="500" required></textarea>
+
+      <label for="photo">Waste photo (optional, max 500 KB)</label>
+      <input type="file" id="photo" accept="image/*">
+      <img id="preview" alt="Selected image"
+        style="display:none;max-width:100%;max-height:200px">
+
+      <button class="primary full" type="submit">
+        Submit Waste Report
+      </button>
+    </form>
+  </div>
+</section>
+
+<!-- ADMIN PAGE -->
+<section class="page" id="adminPage">
+  <div class="card">
+    <h2>🛠️ Admin Panel</h2>
+    <p class="muted">
+      Demo admin: review complaints and update their status.
+    </p>
+
+    <div class="stats">
+      <div class="card">
+        <p>Pending</p>
+        <h2 id="pendingCount">0</h2>
+      </div>
+      <div class="card">
+        <p>Resolved</p>
+        <h2 id="adminResolved">0</h2>
+      </div>
+    </div>
+
+    <input id="adminSearch"
+      placeholder="Search by name, location or category">
+
+    <div class="controls">
+      <button class="secondary admin-filter active"
+        data-status="All">All Reports</button>
+      <button class="secondary admin-filter"
+        data-status="Pending">Pending</button>
+      <button class="secondary admin-filter"
+        data-status="Resolved">Resolved</button>
+    </div>
+
+    <div id="adminReports"></div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <h3>♻️ EcoSmart</h3>
+  <p>Smart Waste Management | College Hackathon</p>
+  <p>Cleaner Campus • Greener Future 🌍</p>
+</footer>
+
+<script>
+const initialBins = [
+  {name:"Dustbin A",place:"Main Gate",level:35},
+  {name:"Dustbin B",place:"Canteen",level:90},
+  {name:"Dustbin C",place:"Library",level:60}
+];
+
+let bins = initialBins.map(b => ({...b}));
+let reports = [];
+let selectedPhoto = "";
+let adminFilter = "All";
+
+const $ = id => document.getElementById(id);
+
+function notify(message) {
+  $("toast").textContent = message;
+  $("toast").style.display = "block";
+  $("toast").scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+
+function loadReports() {
+  try {
+    const saved = localStorage.getItem("ecosmartReports");
+    reports = saved ? JSON.parse(saved) : [];
+    if (!Array.isArray(reports)) reports = [];
+  } catch {
+    reports = [];
+  }
+}
+
+function saveReports() {
+  try {
+    localStorage.setItem("ecosmartReports",JSON.stringify(reports));
+    return true;
+  } catch (error) {
+    notify("Storage full. Try removing a large photo.");
+    return false;
+  }
+}
+
+function showPage(pageId) {
+  document.querySelectorAll(".page").forEach(page => {
+    page.classList.toggle("active",page.id === pageId);
+  });
+
+  document.querySelectorAll("nav button").forEach(button => {
+    button.classList.toggle("active",
+      button.dataset.page === pageId);
+  });
+
+  if (pageId === "adminPage") renderAdmin();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+document.querySelectorAll("[data-page]").forEach(button => {
+  button.addEventListener("click",() => showPage(button.dataset.page));
+});
+
+document.querySelectorAll("[data-goto]").forEach(button => {
+  button.addEventListener("click",() => showPage(button.dataset.goto));
+});
+
+$("themeBtn").addEventListener("click",() => {
+  document.body.classList.toggle("dark");
+  $("themeBtn").textContent =
+    document.body.classList.contains("dark")
+    ? "☀️ Light Mode" : "🌙 Dark Mode";
+});
+
+function renderBins() {
+  $("bins").replaceChildren();
+
+  bins.forEach((bin,index) => {
+    const status = bin.level >= 80
+      ? "Needs Collection"
+      : bin.level >= 60 ? "Almost Full" : "Normal";
+
+    const box = document.createElement("div");
+    box.className = "bin";
+
+    const heading = document.createElement("div");
+    heading.className = "bin-head";
+
+    const title = document.createElement("strong");
+    title.textContent = bin.name + " — " + bin.place;
+
+    const percentage = document.createElement("strong");
+    percentage.textContent = bin.level + "%";
+
+    heading.append(title,percentage);
+
+    const progress = document.createElement("div");
+    progress.className = "progress";
+
+    const bar = document.createElement("div");
+    bar.className = "bar " +
+      (bin.level >= 80 ? "danger" :
+       bin.level >= 60 ? "warning" : "");
+    bar.style.width = bin.level + "%";
+    progress.append(bar);
+
+    const label = document.createElement("p");
+    label.textContent = (bin.level >= 80 ? "🔴 " :
+      bin.level >= 60 ? "🟡 " : "🟢 ") + status;
+
+    const controls = document.createElement("div");
+    controls.className = "controls";
+
+    [-10,10].forEach(change => {
+      const button = document.createElement("button");
+      button.className = "secondary";
+      button.textContent = change > 0 ? "+10%" : "−10%";
+
+      button.addEventListener("click",() => {
+        bin.level = Math.max(0,Math.min(100,
+          bin.level + change));
+        renderBins();
+      });
+      controls.append(button);
+    });
+
+    const empty = document.createElement("button");
+    empty.className = "primary";
+    empty.textContent = "✓ Empty Bin";
+    empty.addEventListener("click",() => {
+      bin.level = 0;
+      renderBins();
+      notify(bin.name + " marked empty in this demo.");
+    });
+
+    controls.append(empty);
+    box.append(heading,progress,label,controls);
+    $("bins").append(box);
+  });
+
+  $("totalBins").textContent = bins.length;
+  $("fullBins").textContent =
+    bins.filter(bin => bin.level >= 80).length;
+}
+
+$("photo").addEventListener("change",function() {
+  const file = this.files[0];
+  selectedPhoto = "";
+  $("preview").style.display = "none";
+
+  if (!file) return;
+
+  if (!file.type.startsWith("image/")) {
+    notify("Please select an image file.");
+    this.value = "";
+    return;
+  }
+
+  if (file.size > 500 * 1024) {
+    notify("Image must be smaller than 500 KB.");
+    this.value = "";
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    selectedPhoto = reader.result;
+    $("preview").src = selectedPhoto;
+    $("preview").style.display = "block";
+  };
+  reader.readAsDataURL(file);
+});
+
+$("reportForm").addEventListener("submit",event => {
+  event.preventDefault();
+
+  const report = {
+    id: Date.now().toString() + Math.random().toString(36).slice(2,7),
+    name:$("name").value.trim(),
+    location:$("location").value,
+    type:$("type").value,
+    description:$("description").value.trim(),
+    photo:selectedPhoto,
+    status:"Pending",
+    createdAt:new Date().toLocaleString()
+  };
+
+  if (!report.name || !report.location ||
+      !report.type || !report.description) {
+    notify("Please fill in all required fields.");
+    return;
+  }
+
+  reports.unshift(report);
+
+  if (!saveReports()) {
+    reports.shift();
+    return;
+  }
+
+  this.reset();
+  selectedPhoto = "";
+  $("preview").style.display = "none";
+
+  renderAll();
+  notify("✅ Report submitted and saved successfully!");
+  showPage("dashboard");
+});
+
+function makeTag(status) {
+  const tag = document.createElement("span");
+  tag.className = "tag" + (status === "Resolved" ? " resolved" : "");
+  tag.textContent = status === "Resolved" ? "✅ Resolved" : "🟡 Pending";
+  return tag;
+}
+
+function renderReports(container,items,adminMode=false) {
+  container.replaceChildren();
+
+  if (!items.length) {
+    const empty = document.createElement("p");
+    empty.textContent = "No reports to display.";
+    container.append(empty);
+    return;
+  }
+
+  items.forEach(report => {
+    const card = document.createElement("div");
+    card.className = "report";
+
+    const title = document.createElement("strong");
+    title.textContent = report.type + " — " + report.location;
+
+    const description = document.createElement("p");
+    description.textContent = report.description;
+
+    const details = document.createElement("p");
+    details.className = "muted";
+    details.textContent = "Reported by " + report.name +
+      " • " + report.createdAt;
+
+    card.append(title,document.createElement("br"),
+      makeTag(report.status),description,details);
+
+    if (report.photo) {
+      const image = document.createElement("img");
+      image.src = report.photo;
+      image.alt = "Waste report attachment";
+      card.append(image);
+    }
+
+    if (adminMode) {
+      const controls = document.createElement("div");
+      controls.className = "controls";
+
+      const toggle = document.createElement("button");
+      toggle.className = "primary";
+      toggle.textContent = report.status === "Pending"
+        ? "✓ Mark Resolved" : "↩ Reopen Report";
+
+      toggle.addEventListener("click",() => {
+        const oldStatus = report.status;
+        report.status = oldStatus === "Pending"
+          ? "Resolved" : "Pending";
+
+        if (!saveReports()) {
+          report.status = oldStatus;
+          return;
+        }
+
+        renderAll();
+        notify("Report status updated: " + report.status);
+      });
+
+      const remove = document.createElement("button");
+      remove.className = "danger-btn";
+      remove.textContent = "Delete";
+
+      remove.addEventListener("click",() => {
+        if (!confirm("Delete this report permanently from this browser?")) {
+          return;
+        }
+
+        const oldReports = [...reports];
+        reports = reports.filter(r => r.id !== report.id);
+
+        if (!saveReports()) {
+          reports = oldReports;
+          return;
+        }
+
+        renderAll();
+        notify("Report deleted.");
+      });
+
+      controls.append(toggle,remove);
+      card.append(controls);
+    }
+
+    container.append(card);
+  });
+}
+
+function renderAdmin() {
+  const query = $("adminSearch").value.toLowerCase();
+
+  const filtered = reports.filter(report => {
+    const matchesStatus = adminFilter === "All" ||
+      report.status === adminFilter;
+
+    const text = [report.name,report.location,
+      report.type,report.description].join(" ").toLowerCase();
+
+    return matchesStatus && text.includes(query);
+  });
+
+  renderReports($("adminReports"),filtered,true);
+
+  $("pendingCount").textContent =
+    reports.filter(r => r.status === "Pending").length;
+
+  $("adminResolved").textContent =
+    reports.filter(r => r.status === "Resolved").length;
+}
+
+document.querySelectorAll(".admin-filter").forEach(button => {
+  button.addEventListener("click",() => {
+    adminFilter = button.dataset.status;
+
+    document.querySelectorAll(".admin-filter").forEach(btn => {
+      btn.classList.toggle("active",btn === button);
+    });
+
+    renderAdmin();
+  });
+});
+
+$("adminSearch").addEventListener("input",renderAdmin);
+
+function renderAll() {
+  $("totalReports").textContent = reports.length;
+  $("resolvedReports").textContent =
+    reports.filter(r => r.status === "Resolved").length;
+
+  renderBins();
+  renderAdmin();
+}
+
+loadReports();
+renderAll();
+</script>
+
+</body>
+</html>

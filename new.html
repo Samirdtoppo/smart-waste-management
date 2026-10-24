@@ -1,0 +1,641 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EcoSmart | Waste Management</title>
+
+<style>
+:root {
+  --green:#168653;
+  --dark:#103d30;
+  --bg:#f1f7f2;
+  --card:#ffffff;
+  --text:#20352a;
+  --muted:#65786c;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  transition:.3s;
+}
+header {
+  background:var(--dark);
+  color:white;
+  padding:20px 6%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
+header h1 { margin:0; font-size:25px; }
+header p { margin:6px 0 0; color:#c8edcf; }
+button,select,input,textarea { font:inherit; }
+button {
+  cursor:pointer;
+  border:0;
+  border-radius:8px;
+  padding:11px 15px;
+}
+.theme-btn { background:white; color:var(--dark); }
+.hero {
+  margin:22px auto;
+  max-width:1200px;
+  width:92%;
+  min-height:235px;
+  border-radius:18px;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  background:linear-gradient(90deg,#dff7df,#b8e6c5);
+}
+.hero-text { padding:30px; flex:1; }
+.hero h2 { font-size:clamp(27px,4vw,43px); margin:0 0 12px; }
+.hero p { line-height:1.6; }
+.hero img {
+  width:43%;
+  height:235px;
+  object-fit:cover;
+}
+main { max-width:1200px; width:92%; margin:auto; }
+.stats {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:15px;
+}
+.card {
+  background:var(--card);
+  padding:20px;
+  border-radius:14px;
+  box-shadow:0 3px 15px #153d2010;
+  margin-bottom:18px;
+}
+.stat { border-top:4px solid var(--green); }
+.stat p { color:var(--muted); margin:0; }
+.stat h2 { font-size:32px; margin:12px 0 5px; }
+.layout {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+  margin-top:18px;
+}
+h3 { margin-top:0; }
+.bin {
+  border:1px solid #e0ebe2;
+  border-radius:10px;
+  padding:14px;
+  margin:12px 0;
+}
+.bin-top {
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+}
+.progress {
+  height:12px;
+  background:#e5eee7;
+  border-radius:20px;
+  overflow:hidden;
+  margin:12px 0;
+}
+.bar {
+  height:100%;
+  background:#29a568;
+  transition:width .3s;
+}
+.bar.warning { background:#edae35; }
+.bar.danger { background:#ed5757; }
+.small-btn {
+  background:#e0f5e7;
+  color:#12643e;
+  margin:2px;
+  padding:7px 10px;
+}
+.primary {
+  background:var(--green);
+  color:white;
+  width:100%;
+  font-weight:bold;
+  margin-top:10px;
+}
+form { display:grid; gap:12px; }
+input,select,textarea {
+  width:100%;
+  padding:12px;
+  border:1px solid #d3e0d5;
+  border-radius:8px;
+  background:var(--card);
+  color:var(--text);
+}
+input[type=file] { padding:9px; }
+.preview {
+  width:100%;
+  max-height:230px;
+  object-fit:cover;
+  border-radius:10px;
+  display:none;
+}
+.report {
+  padding:13px;
+  border-left:4px solid var(--green);
+  background:var(--bg);
+  border-radius:8px;
+  margin:10px 0;
+  overflow-wrap:anywhere;
+}
+.report img {
+  display:block;
+  width:100%;
+  max-height:200px;
+  object-fit:cover;
+  margin-top:10px;
+  border-radius:8px;
+}
+.tag {
+  display:inline-block;
+  background:#d9f5e2;
+  color:#17683e;
+  padding:5px 9px;
+  border-radius:20px;
+  font-size:12px;
+}
+.tips {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:15px;
+}
+.tips img {
+  width:100%;
+  height:140px;
+  object-fit:cover;
+  border-radius:10px;
+}
+.tips h4 { margin-bottom:6px; }
+#toast {
+  display:none;
+  background:#d9f5e2;
+  color:#145d39;
+  padding:12px;
+  border-radius:8px;
+  margin-bottom:15px;
+}
+footer {
+  text-align:center;
+  background:var(--dark);
+  color:white;
+  padding:25px;
+  margin-top:30px;
+}
+body.dark {
+  --bg:#10251d;
+  --card:#1b3529;
+  --text:#e8f4eb;
+  --muted:#b2c9b8;
+}
+body.dark .bin { border-color:#365442; }
+body.dark .report { background:#233e30; }
+body.dark input,body.dark select,body.dark textarea {
+  border-color:#46634f;
+}
+@media(max-width:700px) {
+  .layout { grid-template-columns:1fr; }
+  .hero { flex-direction:column; }
+  .hero img { width:100%; height:180px; }
+  .hero-text { padding:23px; }
+  header h1 { font-size:21px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div>
+    <h1>♻️ EcoSmart</h1>
+    <p>Smart Waste Management System</p>
+  </div>
+  <button class="theme-btn" id="themeBtn"
+          onclick="toggleTheme()">🌙 Dark Mode</button>
+</header>
+
+<section class="hero">
+  <div class="hero-text">
+    <span class="tag">SMART CITY • GREEN FUTURE</span>
+    <h2>Let's Make Our City Cleaner! 🌱</h2>
+    <p>Monitor bins, report waste and help build a
+       cleaner and smarter environment.</p>
+    <button class="primary" style="max-width:210px"
+      onclick="document.getElementById('reportForm')
+      .scrollIntoView({behavior:'smooth'})">
+      + Report Waste
+    </button>
+  </div>
+  <img
+    src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=900&q=80"
+    alt="Recycling and waste management"
+    onerror="this.style.display='none'">
+</section>
+
+<main>
+  <div id="toast" role="status"></div>
+
+  <section class="stats">
+    <div class="card stat">
+      <p>🗑️ Total Dustbins</p>
+      <h2 id="total">3</h2>
+      <span>Across campus</span>
+    </div>
+    <div class="card stat">
+      <p>🚨 Need Collection</p>
+      <h2 id="full">1</h2>
+      <span>Fill level 80% or higher</span>
+    </div>
+    <div class="card stat">
+      <p>📢 Waste Reports</p>
+      <h2 id="count">0</h2>
+      <span>Submitted in this session</span>
+    </div>
+    <div class="card stat">
+      <p>🌍 Eco Score</p>
+      <h2 id="score">85%</h2>
+      <span>Illustrative demo score</span>
+    </div>
+  </section>
+
+  <section class="layout">
+    <div class="card">
+      <h3>📊 Interactive Bin Monitoring</h3>
+      <p style="color:var(--muted)">
+        Demo controls: update each bin's fill level.
+      </p>
+
+      <div id="bins"></div>
+    </div>
+
+    <div class="card" id="reportSection">
+      <h3>📢 Report Waste</h3>
+      <p style="color:var(--muted)">
+        Found garbage? Submit a report to the dashboard.
+      </p>
+
+      <form id="reportForm">
+        <input id="name" placeholder="Your name" required>
+
+        <select id="location" required>
+          <option value="">Select location</option>
+          <option>Main Gate</option>
+          <option>College Canteen</option>
+          <option>Library</option>
+          <option>Garden</option>
+          <option>Other Area</option>
+        </select>
+
+        <select id="type" required>
+          <option value="">Select waste category</option>
+          <option>Wet Waste</option>
+          <option>Dry Waste</option>
+          <option>Plastic Waste</option>
+          <option>E-Waste</option>
+        </select>
+
+        <textarea id="description" rows="3"
+          placeholder="Describe the problem..."
+          required></textarea>
+
+        <label for="photo">📸 Upload waste image (optional)</label>
+        <input id="photo" type="file"
+          accept="image/*">
+
+        <img id="preview" class="preview"
+          alt="Selected waste preview">
+
+        <button class="primary" type="submit">
+          Submit Report 🚀
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>🗺️ Campus Collection Points</h3>
+    <p style="color:var(--muted)">
+      Sample campus locations. These are illustrative,
+      not live GPS positions.
+    </p>
+    <div class="tips">
+      <div>
+        <img src="https://images.unsplash.com/photo-1567521464027-f127ff144326?auto=format&fit=crop&w=500&q=80"
+             alt="Campus buildings"
+             onerror="this.style.display='none'">
+        <h4>📍 Main Gate</h4>
+        <span class="tag">Bin A • 35%</span>
+      </div>
+      <div>
+        <img src="https://images.unsplash.com/photo-1567521464027-f127ff144326?auto=format&fit=crop&w=500&q=80"
+             alt="Campus collection area"
+             onerror="this.style.display='none'">
+        <h4>📍 Canteen</h4>
+        <span class="tag">Bin B • 90%</span>
+      </div>
+      <div>
+        <img src="https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=500&q=80"
+             alt="Green trees and nature"
+             onerror="this.style.display='none'">
+        <h4>📍 Library & Garden</h4>
+        <span class="tag">Bin C • 60%</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>📋 Waste Reports</h3>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;
+                margin-bottom:15px">
+      <input id="search" placeholder="Search reports..."
+             style="flex:1;min-width:180px">
+      <select id="filter" style="flex:1;min-width:150px">
+        <option value="All">All categories</option>
+        <option>Wet Waste</option>
+        <option>Dry Waste</option>
+        <option>Plastic Waste</option>
+        <option>E-Waste</option>
+      </select>
+    </div>
+
+    <div id="reports">
+      <p>No reports yet. Be the first to report waste!</p>
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>🌿 Eco Tips of the Day</h3>
+    <div class="tips">
+      <div>
+        <img src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=500&q=80"
+             alt="Recycling materials">
+        <h4>♻️ Recycle More</h4>
+        <p>Separate paper, plastic and metal for recycling.</p>
+      </div>
+      <div>
+        <img src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=500&q=80"
+             alt="Green plants">
+        <h4>🌱 Compost Wet Waste</h4>
+        <p>Turn food scraps into useful compost.</p>
+      </div>
+      <div>
+        <img src="https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=500&q=80"
+             alt="Natural environment">
+        <h4>🌍 Keep It Clean</h4>
+        <p>Use the correct bin and avoid littering.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <h3>♻️ EcoSmart | Hackathon Project</h3>
+  <p>Cleaner Campus • Greener Future 🌎</p>
+  <small>Demo dashboard — bin readings are simulated.</small>
+</footer>
+
+<script>
+const binData = [
+  {name:"Dustbin A", place:"Main Gate", level:35},
+  {name:"Dustbin B", place:"College Canteen", level:90},
+  {name:"Dustbin C", place:"Library", level:60}
+];
+
+let reportData = [];
+let photoData = "";
+
+function showToast(message) {
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.style.display = "block";
+}
+
+function toggleTheme() {
+  document.body.classList.toggle("dark");
+  const isDark = document.body.classList.contains("dark");
+  document.getElementById("themeBtn").textContent =
+    isDark ? "☀️ Light Mode" : "🌙 Dark Mode";
+}
+
+function renderBins() {
+  const container = document.getElementById("bins");
+  container.replaceChildren();
+
+  binData.forEach((bin, index) => {
+    const status = bin.level >= 80
+      ? "Needs Collection"
+      : bin.level >= 60 ? "Almost Full" : "Normal";
+
+    const color = bin.level >= 80
+      ? "danger" : bin.level >= 60 ? "warning" : "";
+
+    const item = document.createElement("div");
+    item.className = "bin";
+
+    const title = document.createElement("div");
+    title.className = "bin-top";
+
+    const name = document.createElement("strong");
+    name.textContent = "🗑️ " + bin.name;
+
+    const percent = document.createElement("strong");
+    percent.textContent = bin.level + "%";
+
+    title.append(name, percent);
+
+    const place = document.createElement("p");
+    place.textContent = bin.place + " • " + status;
+
+    const progress = document.createElement("div");
+    progress.className = "progress";
+
+    const bar = document.createElement("div");
+    bar.className = "bar " + color;
+    bar.style.width = bin.level + "%";
+    progress.append(bar);
+
+    const controls = document.createElement("div");
+
+    [-10, 10].forEach(change => {
+      const btn = document.createElement("button");
+      btn.className = "small-btn";
+      btn.textContent = change > 0 ? "+10%" : "−10%";
+      btn.addEventListener("click", () => {
+        bin.level = Math.max(0, Math.min(100,
+          bin.level + change));
+        renderBins();
+      });
+      controls.append(btn);
+    });
+
+    const reset = document.createElement("button");
+    reset.className = "small-btn";
+    reset.textContent = "✓ Mark Emptied";
+    reset.addEventListener("click", () => {
+      bin.level = 0;
+      renderBins();
+      showToast(bin.name + " marked as emptied (demo).");
+    });
+    controls.append(reset);
+
+    item.append(title, place, progress, controls);
+    container.append(item);
+  });
+
+  document.getElementById("total").textContent = binData.length;
+  document.getElementById("full").textContent =
+    binData.filter(b => b.level >= 80).length;
+
+  const average = binData.reduce((sum,b) =>
+    sum + b.level, 0) / binData.length;
+
+  document.getElementById("score").textContent =
+    Math.round(100 - average) + "%";
+}
+
+document.getElementById("photo").addEventListener("change",
+  function() {
+    const file = this.files[0];
+    const preview = document.getElementById("preview");
+    photoData = "";
+
+    if (!file) {
+      preview.style.display = "none";
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+      showToast("Please choose an image file.");
+      this.value = "";
+      preview.style.display = "none";
+      return;
+    }
+
+    if (file.size > 3 * 1024 * 1024) {
+      showToast("Please choose an image smaller than 3 MB.");
+      this.value = "";
+      preview.style.display = "none";
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      photoData = reader.result;
+      preview.src = photoData;
+      preview.style.display = "block";
+    };
+    reader.readAsDataURL(file);
+  }
+);
+
+document.getElementById("reportForm").addEventListener(
+  "submit", function(event) {
+    event.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const location = document.getElementById("location").value;
+    const type = document.getElementById("type").value;
+    const description =
+      document.getElementById("description").value.trim();
+
+    if (!name || !location || !type || !description) {
+      showToast("Please fill in all required fields.");
+      return;
+    }
+
+    reportData.unshift({
+      name, location, type, description,
+      photo: photoData,
+      status: "Pending",
+      time: new Date().toLocaleString()
+    });
+
+    renderReports();
+    document.getElementById("count").textContent =
+      reportData.length;
+
+    this.reset();
+    photoData = "";
+    document.getElementById("preview").style.display = "none";
+    showToast("✅ Waste report submitted successfully!");
+  }
+);
+
+function renderReports() {
+  const list = document.getElementById("reports");
+  const query = document.getElementById("search")
+    .value.toLowerCase();
+  const filter = document.getElementById("filter").value;
+
+  list.replaceChildren();
+
+  const filtered = reportData.filter(report =>
+    (filter === "All" || report.type === filter) &&
+    (report.name.toLowerCase().includes(query) ||
+     report.location.toLowerCase().includes(query) ||
+     report.description.toLowerCase().includes(query) ||
+     report.type.toLowerCase().includes(query))
+  );
+
+  if (filtered.length === 0) {
+    const empty = document.createElement("p");
+    empty.textContent = "No matching reports found.";
+    list.append(empty);
+    return;
+  }
+
+  filtered.forEach(report => {
+    const item = document.createElement("div");
+    item.className = "report";
+
+    const title = document.createElement("strong");
+    title.textContent = report.type + " — " + report.location;
+
+    const details = document.createElement("p");
+    details.textContent = report.description;
+
+    const info = document.createElement("small");
+    info.textContent = "By " + report.name + " • " + report.time;
+
+    const tag = document.createElement("p");
+    tag.innerHTML = "";
+    const status = document.createElement("span");
+    status.className = "tag";
+    status.textContent = "🟡 " + report.status;
+    tag.append(status);
+
+    item.append(title, details, info, tag);
+
+    if (report.photo) {
+      const img = document.createElement("img");
+      img.src = report.photo;
+      img.alt = "Uploaded waste";
+      item.append(img);
+    }
+
+    list.append(item);
+  });
+}
+
+document.getElementById("search").addEventListener(
+  "input", renderReports
+);
+document.getElementById("filter").addEventListener(
+  "change", renderReports
+);
+
+renderBins();
+</script>
+
+</body>
+</html>
